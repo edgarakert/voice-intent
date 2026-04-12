@@ -36,7 +36,6 @@ import com.example.voiceintent.feature.record.presentation.service.RecordControl
 import com.example.voiceintent.feature.record.presentation.viewmodel.RecordState
 import com.example.voiceintent.feature.record.presentation.viewmodel.RecordViewModel
 import kotlinx.coroutines.delay
-import java.util.jar.Manifest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
