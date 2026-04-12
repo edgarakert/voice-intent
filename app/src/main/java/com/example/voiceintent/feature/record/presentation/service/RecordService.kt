@@ -141,6 +141,8 @@ class RecordService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+        amplitudeJob?.cancel()
+        amplitudeJob = null
         coroutineScope.cancel()
         recorder?.release()
         recorder = null
