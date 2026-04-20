@@ -3,6 +3,11 @@ package com.example.voiceintent.feature.record.presentation.screen
 import android.annotation.SuppressLint
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,7 +45,7 @@ import com.example.voiceintent.feature.record.presentation.viewmodel.RecordViewM
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedContentLambdaTargetStateParameter")
 @Composable
 fun RecordScreen(
     recordControl: RecordControl?,
@@ -110,57 +115,74 @@ fun RecordScreen(
             )
         }
     ) { _ ->
-        Column(
+        AnimatedContent(
+            targetState = state,
+            transitionSpec = {
+                fadeIn(animationSpec = tween(durationMillis = 300)) togetherWith fadeOut(
+                    animationSpec = tween(durationMillis = 300)
+                )
+            },
+            contentKey = { state ->
+                when (state) {
+                    is RecordState.Idle -> "idle"
+                    is RecordState.Recording -> "recording"
+                    is RecordState.Stopped -> "stopped"
+                    is RecordState.Error -> "error"
+                }
+            },
             modifier = Modifier
                 .fillMaxSize()
-                .padding(all = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            when (val s = state) {
-                is RecordState.Idle -> {
-                    Text(
-                        text = "Нажми, чтобы начать запись",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Spacer(Modifier.height(24.dp))
-                    RecordButton(isRecording = false) {
-                        permissionLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
-                    }
-                }
-
-                is RecordState.Recording -> {
-                    Timer(durationMs = s.durationMs)
-                    Spacer(Modifier.height(24.dp))
-                    AudioWaveform(
-                        amplitudeLevel = s.amplitudeLevel, modifier = Modifier
-                            .fillMaxWidth()
-                            .height(64.dp)
-                    )
-                    Spacer(Modifier.height(24.dp))
-                    RecordButton(isRecording = true) {
-                        val record = recordControl?.stop()
-                        if (record != null) {
-                            viewModel.onRecordingStopped(record = record)
-                        } else {
-                            viewModel.onRecordingError(message = "Не удалось остановить запись")
+                .padding(all = 24.dp), label = "record_state"
+        ) { state ->
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                when (val s = state) {
+                    is RecordState.Idle -> {
+                        Text(
+                            text = "Нажми, чтобы начать запись",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Spacer(Modifier.height(24.dp))
+                        RecordButton(isRecording = false) {
+                            permissionLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
                         }
                     }
-                }
 
-                is RecordState.Stopped -> {
-                    Text(
-                        text = "Готово — ${s.record.durationMs / 1000} сек",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
+                    is RecordState.Recording -> {
+                        Timer(durationMs = s.durationMs)
+                        Spacer(Modifier.height(24.dp))
+                        AudioWaveform(
+                            amplitudeLevel = s.amplitudeLevel, modifier = Modifier
+                                .fillMaxWidth()
+                                .height(64.dp)
+                        )
+                        Spacer(Modifier.height(24.dp))
+                        RecordButton(isRecording = true) {
+                            val record = recordControl?.stop()
+                            if (record != null) {
+                                viewModel.onRecordingStopped(record = record)
+                            } else {
+                                viewModel.onRecordingError(message = "Не удалось остановить запись")
+                            }
+                        }
+                    }
 
-                is RecordState.Error -> {
-                    Text(
-                        text = "Ошибка: ${s.message}",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+                    is RecordState.Stopped -> {
+                        Text(
+                            text = "Готово — ${s.record.durationMs / 1000} сек",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+
+                    is RecordState.Error -> {
+                        Text(
+                            text = "Ошибка: ${s.message}",
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
                 }
             }
         }
