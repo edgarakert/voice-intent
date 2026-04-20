@@ -45,7 +45,7 @@ import com.example.voiceintent.feature.record.presentation.viewmodel.RecordViewM
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedContentLambdaTargetStateParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun RecordScreen(
     recordControl: RecordControl?,
