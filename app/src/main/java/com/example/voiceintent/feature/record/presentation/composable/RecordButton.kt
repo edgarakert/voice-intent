@@ -1,9 +1,10 @@
 package com.example.voiceintent.feature.record.presentation.composable
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -24,13 +25,14 @@ fun RecordButton(isRecording: Boolean, onClick: () -> Unit) {
         } else {
             MaterialTheme.colorScheme.primary
         },
+        animationSpec = tween(durationMillis = 300),
         label = "button_color"
     )
 
     Button(
         onClick = onClick,
         modifier = Modifier.size(56.dp),
-        shape = CircleShape,
+        shape = RoundedCornerShape(16.dp),
         colors = ButtonDefaults.buttonColors(containerColor = animatedColor),
         contentPadding = PaddingValues(0.dp)
     ) {

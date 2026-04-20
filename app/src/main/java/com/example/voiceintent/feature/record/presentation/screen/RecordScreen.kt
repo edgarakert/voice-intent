@@ -52,12 +52,13 @@ fun RecordScreen(
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        if (isGranted) {
-            recordControl?.start(AudioLanguage.Auto)
-            viewModel.onRecordingStarted()
-        } else {
+        if (!isGranted) {
             viewModel.onRecordingError(message = "Нет доступа к микрофону")
+            return@rememberLauncherForActivityResult
         }
+
+        recordControl?.start(AudioLanguage.Auto)
+        viewModel.onRecordingStarted()
     }
 
     LaunchedEffect(recordControl) {

@@ -19,7 +19,7 @@ fun AudioWaveform(
 ) {
     val animatedAmplitude by animateFloatAsState(
         targetValue = amplitudeLevel,
-        animationSpec = tween(durationMillis = 100),
+        animationSpec = tween(durationMillis = 300),
         label = "amplitude"
     )
 
