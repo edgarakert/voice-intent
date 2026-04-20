@@ -140,26 +140,16 @@ fun RecordScreen(
             ) {
                 when (val s = state) {
                     is RecordState.Idle -> {
-                        Text(
-                            text = "Нажми, чтобы начать запись",
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                        Spacer(Modifier.height(24.dp))
-                        RecordButton(isRecording = false) {
+                        IdleState {
                             permissionLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
                         }
                     }
 
                     is RecordState.Recording -> {
-                        Timer(durationMs = s.durationMs)
-                        Spacer(Modifier.height(24.dp))
-                        AudioWaveform(
-                            amplitudeLevel = s.amplitudeLevel, modifier = Modifier
-                                .fillMaxWidth()
-                                .height(64.dp)
-                        )
-                        Spacer(Modifier.height(24.dp))
-                        RecordButton(isRecording = true) {
+                        RecordingState(
+                            durationMs = s.durationMs,
+                            amplitudeLevel = s.amplitudeLevel
+                        ) {
                             val record = recordControl?.stop()
                             if (record != null) {
                                 viewModel.onRecordingStopped(record = record)
@@ -170,21 +160,58 @@ fun RecordScreen(
                     }
 
                     is RecordState.Stopped -> {
-                        Text(
-                            text = "Готово — ${s.record.durationMs / 1000} сек",
-                            style = MaterialTheme.typography.bodyLarge
-                        )
+                        StoppedState(durationSec = s.record.durationMs / 1000)
                     }
 
                     is RecordState.Error -> {
-                        Text(
-                            text = "Ошибка: ${s.message}",
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodyLarge
-                        )
+                        ErrorState(message = s.message)
                     }
                 }
             }
         }
     }
+}
+
+@Composable
+private fun IdleState(onRecordButtonClick: () -> Unit) {
+    Text(
+        text = "Нажми, чтобы начать запись",
+        style = MaterialTheme.typography.bodyLarge
+    )
+    Spacer(Modifier.height(24.dp))
+    RecordButton(isRecording = false, onClick = onRecordButtonClick)
+}
+
+@Composable
+private fun RecordingState(
+    durationMs: Long,
+    amplitudeLevel: Float,
+    onRecordButtonClick: () -> Unit
+) {
+    Timer(durationMs = durationMs)
+    Spacer(Modifier.height(24.dp))
+    AudioWaveform(
+        amplitudeLevel = amplitudeLevel, modifier = Modifier
+            .fillMaxWidth()
+            .height(64.dp)
+    )
+    Spacer(Modifier.height(24.dp))
+    RecordButton(isRecording = true, onClick = onRecordButtonClick)
+}
+
+@Composable
+private fun StoppedState(durationSec: Long) {
+    Text(
+        text = "Готово — $durationSec сек",
+        style = MaterialTheme.typography.bodyLarge
+    )
+}
+
+@Composable
+private fun ErrorState(message: String) {
+    Text(
+        text = "Ошибка: $message",
+        color = MaterialTheme.colorScheme.error,
+        style = MaterialTheme.typography.bodyLarge
+    )
 }
