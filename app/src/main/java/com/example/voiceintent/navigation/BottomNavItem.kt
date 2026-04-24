@@ -14,12 +14,6 @@ sealed class BottomNavItem(
         iconRes = R.drawable.ic_outline_sticky_note_24
     )
 
-    object Analytics : BottomNavItem(
-        screen = Screen.Analytics,
-        label = "Аналитика",
-        iconRes = R.drawable.ic_outline_analytics_24
-    )
-
     object Settings : BottomNavItem(
         screen = Screen.Settings,
         label = "Настройки",
@@ -27,6 +21,6 @@ sealed class BottomNavItem(
     )
 
     companion object {
-        val items = listOf(Notes, Analytics, Settings)
+        val items = listOf(Notes, Settings)
     }
 }

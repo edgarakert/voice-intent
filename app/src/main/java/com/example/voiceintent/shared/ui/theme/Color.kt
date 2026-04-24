@@ -1,4 +1,4 @@
-package com.example.voiceintent.ui.theme
+package com.example.voiceintent.shared.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

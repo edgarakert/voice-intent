@@ -1,4 +1,4 @@
-package com.example.voiceintent.ui.theme
+package com.example.voiceintent.shared.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

@@ -4,5 +4,10 @@ enum class AudioLanguage(val code: String) {
     Russian(code = "ru"),
     English(code = "en"),
     Armenian(code = "hy"),
-    Auto(code = "")
+    Auto(code = "");
+
+    companion object {
+        fun fromCode(code: String): AudioLanguage =
+            entries.find { it.code == code } ?: Auto
+    }
 }
