@@ -1,6 +1,7 @@
 package com.example.voiceintent.feature.record.presentation.screen
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
@@ -28,13 +29,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.voiceintent.feature.record.domain.entity.AudioLanguage
+import com.example.voiceintent.feature.record.domain.entity.AudioRecord
 import com.example.voiceintent.feature.record.presentation.composable.AudioWaveform
 import com.example.voiceintent.feature.record.presentation.composable.RecordButton
 import com.example.voiceintent.feature.record.presentation.composable.RecordIndicator
@@ -49,10 +51,11 @@ import kotlinx.coroutines.delay
 @Composable
 fun RecordScreen(
     recordControl: RecordControl?,
-    onRecordingDone: () -> Unit,
+    navigateBack: () -> Unit,
+    onRecordingDone: (audioRecord: AudioRecord) -> Unit,
     viewModel: RecordViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -74,7 +77,7 @@ fun RecordScreen(
 
     LaunchedEffect(state) {
         if (state is RecordState.Stopped) {
-            onRecordingDone()
+            onRecordingDone((state as RecordState.Stopped).record)
         }
     }
 
@@ -88,6 +91,9 @@ fun RecordScreen(
             }
         }
     }
+
+    // блокируем системную кнопку назад во время записи
+    BackHandler(enabled = state is RecordState.Recording) {}
 
     Scaffold(
         topBar = {
@@ -105,7 +111,7 @@ fun RecordScreen(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = onRecordingDone) {
+                    IconButton(onClick = navigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Назад",

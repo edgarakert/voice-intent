@@ -2,10 +2,12 @@ package com.example.voiceintent.feature.record.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.voiceintent.di.DefaultDispatcher
+import com.example.voiceintent.di.MainDispatcher
 import com.example.voiceintent.feature.record.domain.entity.AudioRecord
 import com.example.voiceintent.feature.record.presentation.service.RecordEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,13 +17,16 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class RecordViewModel @Inject constructor() : ViewModel() {
+class RecordViewModel @Inject constructor(
+    @param:MainDispatcher private val mainDispatcher: CoroutineDispatcher,
+    @param:DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
+) : ViewModel() {
     private val _state = MutableStateFlow<RecordState>(RecordState.Idle)
     val state: StateFlow<RecordState> = _state.asStateFlow()
 
     fun onRecordEventsFlow(eventsFlow: Flow<RecordEvent>) {
-        viewModelScope.launch(Dispatchers.Main) {
-            withContext(Dispatchers.Default) {
+        viewModelScope.launch(mainDispatcher) {
+            withContext(defaultDispatcher) {
                 eventsFlow.collect { event ->
                     when (event) {
                         is RecordEvent.AmplitudeChanged -> {

@@ -84,7 +84,7 @@ class RecordService : Service() {
 
     private fun createOutputFile(): File {
         val directory = File(filesDir, "recordings").also { it.mkdirs() }
-        return File(directory, "record_${System.currentTimeMillis()}_m4a")
+        return File(directory, "record_${System.currentTimeMillis()}.m4a")
     }
 
 
