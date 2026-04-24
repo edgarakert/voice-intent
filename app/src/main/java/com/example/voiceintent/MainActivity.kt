@@ -29,7 +29,7 @@ import com.example.voiceintent.feature.record.presentation.service.RecordService
 import com.example.voiceintent.navigation.AppNavHost
 import com.example.voiceintent.navigation.BottomNavItem
 import com.example.voiceintent.navigation.Screen
-import com.example.voiceintent.ui.theme.VoiceIntentTheme
+import com.example.voiceintent.shared.ui.theme.VoiceIntentTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -64,7 +64,6 @@ class MainActivity : ComponentActivity() {
 
                 val showBottomBar = currentRoute in listOf(
                     Screen.Notes.route,
-                    Screen.Analytics.route,
                     Screen.Settings.route
                 )
 
@@ -101,7 +100,12 @@ class MainActivity : ComponentActivity() {
                     AppNavHost(
                         navController = navController,
                         recordControl = recordControl,
-                        modifier = Modifier.padding(paddingValues = PaddingValues(bottom = innerPadding.calculateBottomPadding()))
+                        modifier = Modifier
+                            .padding(
+                                paddingValues = PaddingValues(
+                                    bottom = innerPadding.calculateBottomPadding()
+                                )
+                            )
                     )
                 }
             }
