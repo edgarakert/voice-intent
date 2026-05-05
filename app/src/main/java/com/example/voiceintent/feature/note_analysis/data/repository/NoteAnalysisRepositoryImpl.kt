@@ -1,5 +1,6 @@
 package com.example.voiceintent.feature.note_analysis.data.repository
 
+import com.example.voiceintent.di.IODispatcher
 import com.example.voiceintent.feature.note_analysis.data.api.GroqChatApi
 import com.example.voiceintent.feature.note_analysis.data.api.GroqTranscriptionApi
 import com.example.voiceintent.feature.note_analysis.data.api.extension.toMood
@@ -9,6 +10,8 @@ import com.example.voiceintent.feature.note_analysis.data.api.model.NoteAnalysis
 import com.example.voiceintent.feature.note_analysis.domain.entity.NoteAnalysisResult
 import com.example.voiceintent.feature.note_analysis.domain.repository.NoteAnalysisRepository
 import com.example.voiceintent.feature.record.domain.entity.AudioLanguage
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -21,11 +24,12 @@ class NoteAnalysisRepositoryImpl @Inject constructor(
     private val transcriptionApi: GroqTranscriptionApi,
     private val chatApi: GroqChatApi,
     private val json: Json,
+    @param:IODispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : NoteAnalysisRepository {
     override suspend fun transcribe(
         audioFile: File,
         language: AudioLanguage
-    ): String {
+    ): String = withContext(ioDispatcher) {
         val fileBytes = audioFile.readBytes()
 
 
@@ -52,7 +56,7 @@ class NoteAnalysisRepositoryImpl @Inject constructor(
         } else null
 
 
-        return transcriptionApi.transcribe(
+        return@withContext transcriptionApi.transcribe(
             file = filePart,
             model = modelPart,
             responseFormat = responseFormatPart,
@@ -60,43 +64,47 @@ class NoteAnalysisRepositoryImpl @Inject constructor(
         ).text
     }
 
-    override suspend fun analyze(transcript: String): NoteAnalysisResult {
-        val request = ChatRequest(
-            model = "llama-3.3-70b-versatile",
-            messages = listOf(
-                ChatMessage(role = "system", content = CHAT_SYSTEM_PROMPT),
-                ChatMessage(role = "user", content = transcript)
+    override suspend fun analyze(transcript: String): NoteAnalysisResult =
+        withContext(ioDispatcher) {
+            val request = ChatRequest(
+                model = "llama-3.3-70b-versatile",
+                messages = listOf(
+                    ChatMessage(role = "system", content = CHAT_SYSTEM_PROMPT),
+                    ChatMessage(role = "user", content = transcript)
+                )
             )
-        )
 
-        val rawContent = chatApi.analyze(request).choices.first().message.content
+            val rawContent = chatApi.analyze(request).choices.first().message.content
 
-        val dto = json.decodeFromString<NoteAnalysis>(rawContent)
+            val dto = json.decodeFromString<NoteAnalysis>(rawContent)
 
-        return NoteAnalysisResult(
-            transcript = transcript,
-            tags = dto.tags,
-            tasks = dto.tasks,
-            mood = dto.mood.toMood(),
-            summary = dto.summary
-        )
-    }
+            return@withContext NoteAnalysisResult(
+                transcript = transcript,
+                tags = dto.tags,
+                tasks = dto.tasks,
+                mood = dto.mood.toMood(),
+                summary = dto.summary
+            )
+        }
 
     companion object {
         private val CHAT_SYSTEM_PROMPT = """
-            You are a personal diary assistant. Analyze the transcribed voice note and respond ONLY with a valid JSON object — no markdown, no explanation, no extra text.
+    You are a personal diary assistant. Analyze the transcribed voice note and respond ONLY with a valid JSON object — no markdown, no explanation, no extra text.
+    
+    IMPORTANT: All text fields (tags, summary, tasks) MUST be written in the same language as the input text. If the input is in Russian, respond in Russian. If in English, respond in English.
 
-            The JSON must have exactly these fields:
-            {
-              "tags": string[],
-              "tasks": string[],
-              "mood": "positive" | "neutral" | "negative",
-              "summary": string
-            }
+    The JSON must have exactly these fields:
+    {
+      "tags": string[],
+      "tasks": string[],
+      "mood": "positive" | "neutral" | "negative",
+      "summary": string
+    }
 
-            - tags: 2–5 semantic tags in the same language as the note
-            - tasks: action items mentioned (empty array if none)
-            - summary: 1–2 sentences
-        """.trimIndent()
+    - tags: 2–5 semantic tags. MUST be in the same language as the transcribed text
+    - tasks: action items mentioned (empty array if none). MUST be in the same language as the transcribed text
+    - summary: 1–2 sentences. MUST be in the same language as the transcribed text
+    - mood: ONLY one of these exact values: "positive", "neutral", "negative"
+""".trimIndent()
     }
 }
