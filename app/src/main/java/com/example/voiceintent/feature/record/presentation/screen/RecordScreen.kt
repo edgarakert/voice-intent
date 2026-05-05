@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.voiceintent.feature.record.domain.entity.AudioLanguage
-import com.example.voiceintent.feature.record.domain.entity.AudioRecord
 import com.example.voiceintent.feature.record.presentation.composable.AudioWaveform
 import com.example.voiceintent.feature.record.presentation.composable.RecordButton
 import com.example.voiceintent.feature.record.presentation.composable.RecordIndicator
@@ -52,7 +51,7 @@ import kotlinx.coroutines.delay
 fun RecordScreen(
     recordControl: RecordControl?,
     navigateBack: () -> Unit,
-    onRecordingDone: (audioRecord: AudioRecord) -> Unit,
+    onRecordingDone: () -> Unit,
     viewModel: RecordViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -77,7 +76,7 @@ fun RecordScreen(
 
     LaunchedEffect(state) {
         if (state is RecordState.Stopped) {
-            onRecordingDone((state as RecordState.Stopped).record)
+            onRecordingDone()
         }
     }
 
