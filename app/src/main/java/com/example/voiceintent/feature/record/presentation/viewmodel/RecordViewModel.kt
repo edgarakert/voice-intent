@@ -2,43 +2,37 @@ package com.example.voiceintent.feature.record.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.voiceintent.di.DefaultDispatcher
-import com.example.voiceintent.di.MainDispatcher
 import com.example.voiceintent.feature.record.domain.entity.AudioRecord
+import com.example.voiceintent.feature.record.domain.use_case.SaveAudioRecordUseCase
 import com.example.voiceintent.feature.record.presentation.service.RecordEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class RecordViewModel @Inject constructor(
-    @param:MainDispatcher private val mainDispatcher: CoroutineDispatcher,
-    @param:DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
+    private val saveAudioRecordUseCase: SaveAudioRecordUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow<RecordState>(RecordState.Idle)
     val state: StateFlow<RecordState> = _state.asStateFlow()
 
     fun onRecordEventsFlow(eventsFlow: Flow<RecordEvent>) {
-        viewModelScope.launch(mainDispatcher) {
-            withContext(defaultDispatcher) {
-                eventsFlow.collect { event ->
-                    when (event) {
-                        is RecordEvent.AmplitudeChanged -> {
-                            val currentState = _state.value
-                            if (currentState is RecordState.Recording) {
-                                _state.value = currentState.copy(amplitudeLevel = event.level)
-                            }
+        viewModelScope.launch {
+            eventsFlow.collect { event ->
+                when (event) {
+                    is RecordEvent.AmplitudeChanged -> {
+                        val currentState = _state.value
+                        if (currentState is RecordState.Recording) {
+                            _state.value = currentState.copy(amplitudeLevel = event.level)
                         }
+                    }
 
-                        is RecordEvent.MaxDurationReached -> {
-                            _state.value = RecordState.Stopped(event.record)
-                        }
+                    is RecordEvent.MaxDurationReached -> {
+                        _state.value = RecordState.Stopped(event.record)
                     }
                 }
             }
@@ -50,6 +44,7 @@ class RecordViewModel @Inject constructor(
     }
 
     fun onRecordingStopped(record: AudioRecord) {
+        saveAudioRecordUseCase.invoke(record = record)
         _state.value = RecordState.Stopped(record = record)
     }
 
