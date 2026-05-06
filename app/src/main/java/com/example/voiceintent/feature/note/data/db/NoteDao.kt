@@ -18,6 +18,20 @@ interface NoteDao {
     @Query("SELECT * FROM notes WHERE id = :id")
     suspend fun getNoteById(id: Long): NoteEntity?
 
+    @Query(
+        """
+        SELECT * FROM notes
+        WHERE LOWER(transcript) LIKE '%' || LOWER(:query) || '%'
+           OR LOWER(tags) LIKE '%' || LOWER(:query) || '%'
+           OR LOWER(summary) LIKE '%' || LOWER(:query) || '%'
+        ORDER BY createdAt DESC
+    """
+    )
+    fun searchNotes(query: String): Flow<List<NoteEntity>>
+
+    @Query("SELECT * FROM notes WHERE mood = :mood ORDER BY createdAt DESC")
+    fun getNotesByMood(mood: String): Flow<List<NoteEntity>>
+
     @Delete
     suspend fun delete(note: NoteEntity)
 }
