@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.voiceintent.feature.note_analysis.presentation.screen.NoteAnalysisScreen
+import com.example.voiceintent.feature.notes.presentation.screen.NotesScreen
 import com.example.voiceintent.feature.record.presentation.screen.RecordScreen
 import com.example.voiceintent.feature.record.presentation.service.RecordControl
 
@@ -17,7 +18,7 @@ fun AppNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Record.route,
+        startDestination = Screen.Notes.route,
         modifier = modifier
     ) {
         composable(
@@ -43,6 +44,19 @@ fun AppNavHost(
                     navController.navigate(Screen.Notes.route) {
                         popUpTo(Screen.Record.route) { inclusive = true }
                     }
+                }
+            )
+        }
+
+        composable(
+            route = Screen.Notes.route
+        ) {
+            NotesScreen(
+                onNoteClick = { noteId ->
+                    navController.navigate(Screen.NoteDetails.createRoute(noteId))
+                },
+                onCreateNote = {
+                    navController.navigate(Screen.Record.route)
                 }
             )
         }
