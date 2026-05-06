@@ -76,6 +76,7 @@ fun RecordScreen(
 
     LaunchedEffect(state) {
         if (state is RecordState.Stopped) {
+            delay(1600)
             onRecordingDone()
         }
     }

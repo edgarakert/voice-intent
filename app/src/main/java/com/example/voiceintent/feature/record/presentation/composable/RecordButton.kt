@@ -12,7 +12,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.voiceintent.R
@@ -39,7 +38,7 @@ fun RecordButton(isRecording: Boolean, onClick: () -> Unit) {
         Icon(
             painter = painterResource(if (isRecording) R.drawable.ic_baseline_stop_24 else R.drawable.ic_rounded_mic_24),
             contentDescription = if (isRecording) "Остановить запись" else "Начать запись",
-            tint = Color.White,
+            tint = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier.size(22.dp)
         )
     }
