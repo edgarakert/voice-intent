@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">VoiceIntent</string>
+    <string name="notes_clear_filters">Сбросить фильтры</string>
+    <string name="notes_clear">Очистить</string>
+    <string name="notes_clear_tag">Снять тег</string>
+    <string name="notes_create_note">Создать заметку</string>
+    <string name="notes_dairy">Дневник</string>
+    <string name="notes_no_notes">Нет заметок</string>
+    <string name="notes_not_found">Ничего не найдено</string>
+    <string name="notes_record_first_note">Запиши первую заметку</string>
+    <string name="notes_search_by_text_or_tag">Поиск по тексту или тегам…</string>
+    <string name="notes_tag">Тег:</string>
+    <string name="notes_try_to_change_query">Попробуй изменить запрос или фильтры</string>
 </resources>
