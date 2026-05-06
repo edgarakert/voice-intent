@@ -5,8 +5,8 @@ sealed class Screen(val route: String) {
 
     data object Record : Screen(route = "record")
 
-    data object Details : Screen(route = "detail/{noteId}") {
-        fun createRoute(noteId: Long) = "detail/$noteId"
+    data object NoteDetails : Screen(route = "note_details/{noteId}") {
+        fun createRoute(noteId: Long) = "note_details/$noteId"
     }
 
     data object NoteAnalysis : Screen(route = "note_analysis")

@@ -6,6 +6,7 @@ import com.example.voiceintent.feature.note.data.db.extenstion.toDomain
 import com.example.voiceintent.feature.note.data.db.extenstion.toEntity
 import com.example.voiceintent.feature.note.domain.entity.Note
 import com.example.voiceintent.feature.note.domain.repository.NoteRepository
+import com.example.voiceintent.feature.note_analysis.domain.entity.Mood
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -29,6 +30,17 @@ class NoteRepositoryImpl @Inject constructor(
     override suspend fun getNoteById(id: Long): Note? = withContext(ioDispatcher) {
         return@withContext dao.getNoteById(id)?.toDomain()
     }
+
+    override fun searchNotes(query: String): Flow<List<Note>> =
+        dao.searchNotes(query = query).map { list ->
+            list.map { it.toDomain() }
+        }.flowOn(ioDispatcher)
+
+    override fun getNotesByMood(mood: Mood): Flow<List<Note>> =
+        dao.getNotesByMood(mood = mood.name).map { list ->
+            list.map { it.toDomain() }
+        }.flowOn(ioDispatcher)
+
 
     override suspend fun deleteNote(note: Note) = withContext(ioDispatcher) {
         return@withContext dao.delete(note.toEntity())
