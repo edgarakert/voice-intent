@@ -1,6 +1,7 @@
 package com.example.voiceintent
 
 import android.content.ComponentName
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
@@ -54,6 +55,7 @@ class MainActivity : ComponentActivity() {
     private var isRecordServiceBound = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
