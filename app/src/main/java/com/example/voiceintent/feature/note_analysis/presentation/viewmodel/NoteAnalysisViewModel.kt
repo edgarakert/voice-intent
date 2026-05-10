@@ -50,10 +50,10 @@ class NoteAnalysisViewModel @Inject constructor(
                         summary = result.summary,
                         mood = result.mood,
                         tags = result.tags,
-                        tasks = result.tags,
+                        tasks = result.tasks,
                         createdAt = createdAt,
                         durationMs = durationMs,
-                        language = language
+                        language = language,
                     )
                 )
 
