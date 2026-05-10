@@ -3,9 +3,12 @@ package com.example.voiceintent.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.voiceintent.feature.note_analysis.presentation.screen.NoteAnalysisScreen
+import com.example.voiceintent.feature.note_details.presentation.screen.NoteDetailsScreen
 import com.example.voiceintent.feature.notes.presentation.screen.NotesScreen
 import com.example.voiceintent.feature.record.presentation.screen.RecordScreen
 import com.example.voiceintent.feature.record.presentation.service.RecordControl
@@ -58,6 +61,15 @@ fun AppNavHost(
                 onCreateNote = {
                     navController.navigate(Screen.Record.route)
                 }
+            )
+        }
+
+        composable(
+            route = Screen.NoteDetails.route,
+            arguments = listOf(navArgument("noteId") { type = NavType.LongType })
+        ) {
+            NoteDetailsScreen(
+                onNavigateBack = { navController.popBackStack() }
             )
         }
     }
