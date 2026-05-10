@@ -7,13 +7,13 @@ import kotlinx.coroutines.flow.Flow
 interface NoteRepository {
     suspend fun saveNote(note: Note): Long
 
-    fun getAllNotes(): Flow<List<Note>>
+    fun getNotes(
+        query: String = "",
+        mood: Mood? = null,
+        offset: Int = 0
+    ): Flow<List<Note>>
 
     suspend fun getNoteById(id: Long): Note?
-
-    fun searchNotes(query: String): Flow<List<Note>>
-
-    fun getNotesByMood(mood: Mood): Flow<List<Note>>
 
     suspend fun deleteNote(note: Note)
 }

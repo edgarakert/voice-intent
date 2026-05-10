@@ -4,11 +4,24 @@
     <string name="notes_clear">Очистить</string>
     <string name="notes_clear_tag">Снять тег</string>
     <string name="notes_create_note">Создать заметку</string>
-    <string name="notes_dairy">Дневник</string>
     <string name="notes_no_notes">Нет заметок</string>
     <string name="notes_not_found">Ничего не найдено</string>
+    <string name="notes_notes">Заметки</string>
     <string name="notes_record_first_note">Запиши первую заметку</string>
     <string name="notes_search_by_text_or_tag">Поиск по тексту или тегам…</string>
     <string name="notes_tag">Тег:</string>
     <string name="notes_try_to_change_query">Попробуй изменить запрос или фильтры</string>
+    <string name="note_details_back">Назад</string>
+    <string name="note_details_cancel">Отмена</string>
+    <string name="note_details_confirm_delete">Удалить</string>
+    <string name="note_details_delete">Удалить</string>
+    <string name="note_details_delete_confirmation_title">Удалить заметку?</string>
+    <string name="note_details_delete_confirmation_body">Это действие нельзя отменить</string>
+    <string name="note_details_hide_transcript">Свернуть</string>
+    <string name="note_details_pause">Пауза</string>
+    <string name="note_details_play">Воспроизвести</string>
+    <string name="note_details_show_full_transcript">Показать полностью</string>
+    <string name="note_details_tasks">Задачи</string>
+    <string name="note_details_transcript">Транскрипт</string>
+    <string name="notes_note">Заметка</string>
 </resources>

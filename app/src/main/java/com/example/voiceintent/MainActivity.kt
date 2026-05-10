@@ -51,10 +51,10 @@ class MainActivity : ComponentActivity() {
     }
 
 
+    private var isRecordServiceBound = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initializeRecordService()
-
         enableEdgeToEdge()
         setContent {
             VoiceIntentTheme {
@@ -112,15 +112,24 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun initializeRecordService() {
-        Intent(this, RecordService::class.java).also { intent ->
-            bindService(intent, recordServiceConnection, BIND_AUTO_CREATE)
+    override fun onStart() {
+        super.onStart()
+        if (!isRecordServiceBound) {
+            Intent(this, RecordService::class.java).also { intent ->
+                bindService(intent, recordServiceConnection, BIND_AUTO_CREATE)
+            }
+            isRecordServiceBound = true
         }
     }
 
     override fun onStop() {
         super.onStop()
+        if (!isRecordServiceBound) {
+            return
+        }
+
         unbindService(recordServiceConnection)
         recordControl = null
+        isRecordServiceBound = false
     }
 }

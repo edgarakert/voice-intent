@@ -1,12 +1,17 @@
 package com.example.voiceintent.feature.note.data.repository
 
+import androidx.room.withTransaction
 import com.example.voiceintent.di.IODispatcher
 import com.example.voiceintent.feature.note.data.db.NoteDao
+import com.example.voiceintent.feature.note.data.db.NoteDatabase
+import com.example.voiceintent.feature.tag.data.db.NoteTagEntity
+import com.example.voiceintent.feature.tag.data.db.TagEntity
 import com.example.voiceintent.feature.note.data.db.extenstion.toDomain
 import com.example.voiceintent.feature.note.data.db.extenstion.toEntity
 import com.example.voiceintent.feature.note.domain.entity.Note
 import com.example.voiceintent.feature.note.domain.repository.NoteRepository
 import com.example.voiceintent.feature.note_analysis.domain.entity.Mood
+import com.example.voiceintent.feature.tag.data.db.TagDao
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -15,34 +20,36 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class NoteRepositoryImpl @Inject constructor(
-    private val dao: NoteDao,
+    private val noteDao: NoteDao,
+    private val tagDao: TagDao,
+    private val database: NoteDatabase,
     @param:IODispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : NoteRepository {
     override suspend fun saveNote(note: Note): Long = withContext(ioDispatcher) {
-        return@withContext dao.insert(note.toEntity())
+        database.withTransaction {
+            val noteId = noteDao.insert(note.toEntity())
+            note.tags.forEach { tagName ->
+                tagDao.insertTag(TagEntity(name = tagName))
+                val tagId = tagDao.getTagIdByName(tagName)!!
+                tagDao.insertNoteTag(NoteTagEntity(noteId = noteId, tagId = tagId))
+            }
+            noteId
+        }
     }
 
-    override fun getAllNotes(): Flow<List<Note>> = dao.getAllNotes().map { list ->
-        list.map { it.toDomain() }
-    }.flowOn(ioDispatcher)
+    override fun getNotes(
+        query: String,
+        mood: Mood?,
+        offset: Int
+    ): Flow<List<Note>> =
+        noteDao.getNotes(query, mood?.name ?: "", offset)
+            .map { list -> list.map { it.toDomain() } }
+            .flowOn(ioDispatcher)
 
-
-    override suspend fun getNoteById(id: Long): Note? = withContext(ioDispatcher) {
-        return@withContext dao.getNoteById(id)?.toDomain()
-    }
-
-    override fun searchNotes(query: String): Flow<List<Note>> =
-        dao.searchNotes(query = query).map { list ->
-            list.map { it.toDomain() }
-        }.flowOn(ioDispatcher)
-
-    override fun getNotesByMood(mood: Mood): Flow<List<Note>> =
-        dao.getNotesByMood(mood = mood.name).map { list ->
-            list.map { it.toDomain() }
-        }.flowOn(ioDispatcher)
-
+    override suspend fun getNoteById(id: Long): Note? =
+        withContext(ioDispatcher) { noteDao.getNoteById(id)?.toDomain() }
 
     override suspend fun deleteNote(note: Note) = withContext(ioDispatcher) {
-        return@withContext dao.delete(note.toEntity())
+        noteDao.delete(note.toEntity())
     }
 }

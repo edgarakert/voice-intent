@@ -66,7 +66,7 @@ fun NotesScreen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = stringResource(R.string.notes_dairy),
+                text = stringResource(R.string.notes_notes),
                 style = MaterialTheme.typography.headlineMedium
             )
             Spacer(modifier = Modifier.height(12.dp))
