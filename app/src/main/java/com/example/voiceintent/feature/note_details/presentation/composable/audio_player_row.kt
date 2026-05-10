@@ -51,7 +51,7 @@ fun AudioPlayerRow(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.fillMaxWidth()
     ) {
-        AudioControllerButton(
+        AudioPlayerControllerButton(
             isPlaying = isPlaying,
             onPausePressed = onPause,
             onPlayPressed = onPlay
@@ -80,7 +80,7 @@ fun AudioPlayerRow(
 }
 
 @Composable
-private fun AudioControllerButton(
+private fun AudioPlayerControllerButton(
     isPlaying: Boolean,
     onPausePressed: () -> Unit,
     onPlayPressed: () -> Unit
