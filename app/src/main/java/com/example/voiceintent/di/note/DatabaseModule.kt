@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.voiceintent.feature.note.data.db.NoteDao
 import com.example.voiceintent.feature.note.data.db.NoteDatabase
+import com.example.voiceintent.feature.tag.data.db.TagDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,12 +22,18 @@ object DatabaseModule {
             context = context,
             klass = NoteDatabase::class.java,
             name = "voice_intent.db"
-        ).build()
+        ).fallbackToDestructiveMigration(false).build()
     }
 
     @Provides
     @Singleton
     fun provideNoteDao(database: NoteDatabase): NoteDao {
         return database.noteDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTagDao(database: NoteDatabase): TagDao {
+        return database.tagDao()
     }
 }
