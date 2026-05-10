@@ -12,8 +12,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.voiceintent.R
 
 @Composable
 fun RecordIndicator() {
@@ -31,7 +33,7 @@ fun RecordIndicator() {
                 )
         )
         Text(
-            text = "REC",
+            text = stringResource(R.string.record_indicator_rec),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.error,
             fontWeight = FontWeight.Medium

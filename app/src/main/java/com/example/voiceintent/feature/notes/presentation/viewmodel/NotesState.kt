@@ -1,5 +1,7 @@
 package com.example.voiceintent.feature.notes.presentation.viewmodel
 
+import androidx.annotation.StringRes
+import com.example.voiceintent.R
 import com.example.voiceintent.feature.note.domain.entity.Note
 import com.example.voiceintent.feature.note_analysis.domain.entity.Mood
 
@@ -14,11 +16,11 @@ data class NotesState(
 )
 
 enum class MoodFilter(
-    val label: String,
+    @param:StringRes val labelRes: Int,
     val value: Mood?
 ) {
-    ALL("Все", null),
-    POSITIVE("\uD83D\uDE0A Позитив", Mood.POSITIVE),
-    NEUTRAL("\uD83D\uDE10 Нейтрально", Mood.NEUTRAL),
-    NEGATIVE("\uD83D\uDE14 Негатив", Mood.NEGATIVE),
+    ALL(R.string.notes_mood_all, null),
+    POSITIVE(R.string.notes_mood_positive, Mood.POSITIVE),
+    NEUTRAL(R.string.notes_mood_neutral, Mood.NEUTRAL),
+    NEGATIVE(R.string.notes_mood_negative, Mood.NEGATIVE),
 }

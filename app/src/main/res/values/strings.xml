@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">VoiceIntent</string>
+    <!-- Mood filter chips -->
+    <string name="notes_mood_all">Все</string>
+    <string name="notes_mood_positive">😊 Позитив</string>
+    <string name="notes_mood_neutral">😐 Нейтрально</string>
+    <string name="notes_mood_negative">😔 Негатив</string>
+    <!-- Notes screen -->
     <string name="notes_clear_filters">Сбросить фильтры</string>
     <string name="notes_clear">Очистить</string>
     <string name="notes_clear_tag">Снять тег</string>
@@ -11,6 +17,12 @@
     <string name="notes_search_by_text_or_tag">Поиск по тексту или тегам…</string>
     <string name="notes_tag">Тег:</string>
     <string name="notes_try_to_change_query">Попробуй изменить запрос или фильтры</string>
+    <!-- Note analysis screen -->
+    <string name="note_analysis_title">Обработка заметки</string>
+    <string name="note_analysis_processing">Обрабатываю заметку…</string>
+    <string name="note_analysis_failed">Не удалось обработать заметку</string>
+    <string name="note_analysis_retry">Повторить</string>
+    <!-- Note details screen -->
     <string name="note_details_back">Назад</string>
     <string name="note_details_cancel">Отмена</string>
     <string name="note_details_confirm_delete">Удалить</string>
@@ -23,5 +35,16 @@
     <string name="note_details_show_full_transcript">Показать полностью</string>
     <string name="note_details_tasks">Задачи</string>
     <string name="note_details_transcript">Транскрипт</string>
-    <string name="notes_note">Заметка</string>
+    <string name="note_details_note">Заметка</string>
+    <!-- Record screen -->
+    <string name="record_new_note">Новая заметка</string>
+    <string name="record_no_mic_permission">Нет доступа к микрофону</string>
+    <string name="record_service_unavailable">Сервис записи недоступен</string>
+    <string name="record_stop_failed">Не удалось остановить запись</string>
+    <string name="record_tap_to_start">Нажми, чтобы начать запись</string>
+    <string name="record_done_seconds">Готово — %d сек</string>
+    <string name="record_error">Ошибка: %s</string>
+    <string name="record_stop">Остановить запись</string>
+    <string name="record_start">Начать запись</string>
+    <string name="record_indicator_rec">REC</string>
 </resources>

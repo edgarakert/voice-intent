@@ -106,7 +106,7 @@ private fun TopAppBar(
 ) {
     TopAppBar(
         title = {
-            Text(text = stringResource(R.string.notes_note))
+            Text(text = stringResource(R.string.note_details_note))
         },
         navigationIcon = {
             IconButton(onClick = onNavigateBack) {
