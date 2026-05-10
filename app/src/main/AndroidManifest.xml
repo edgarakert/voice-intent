@@ -22,7 +22,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.VoiceIntent">
+            android:theme="@style/Theme.VoiceIntent.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
