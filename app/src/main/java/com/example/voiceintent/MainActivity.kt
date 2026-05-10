@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    private var isServiceBound = false
+    private var isRecordServiceBound = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,20 +114,22 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
-        if (!isServiceBound) {
+        if (!isRecordServiceBound) {
             Intent(this, RecordService::class.java).also { intent ->
                 bindService(intent, recordServiceConnection, BIND_AUTO_CREATE)
             }
-            isServiceBound = true
+            isRecordServiceBound = true
         }
     }
 
     override fun onStop() {
         super.onStop()
-        if (isServiceBound) {
-            unbindService(recordServiceConnection)
-            recordControl = null
-            isServiceBound = false
+        if (!isRecordServiceBound) {
+            return
         }
+
+        unbindService(recordServiceConnection)
+        recordControl = null
+        isRecordServiceBound = false
     }
 }
