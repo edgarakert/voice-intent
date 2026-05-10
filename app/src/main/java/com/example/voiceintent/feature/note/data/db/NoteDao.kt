@@ -1,11 +1,11 @@
 package com.example.voiceintent.feature.note.data.db
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NoteDao {
@@ -26,15 +26,19 @@ interface NoteDao {
                WHERE LOWER(t.name) LIKE '%' || LOWER(:query) || '%'
            ))
         AND (:mood = '' OR n.mood = :mood)
+        AND (:tag = '' OR n.id IN (
+            SELECT nt.noteId FROM noteTags nt
+            JOIN tags t ON nt.tagId = t.id
+            WHERE t.name = :tag
+        ))
         ORDER BY n.createdAt DESC
-        LIMIT 20 OFFSET :offset
     """
     )
     fun getNotes(
         query: String = "",
         mood: String = "",
-        offset: Int = 0
-    ): Flow<List<NoteWithTags>>
+        tag: String = ""
+    ): PagingSource<Int, NoteWithTags>
 
     @Transaction
     @Query("SELECT * FROM notes WHERE id = :id")

@@ -1,5 +1,6 @@
 package com.example.voiceintent.feature.note.domain.use_case
 
+import androidx.paging.PagingData
 import com.example.voiceintent.feature.note.domain.entity.Note
 import com.example.voiceintent.feature.note.domain.repository.NoteRepository
 import com.example.voiceintent.feature.note_analysis.domain.entity.Mood
@@ -12,7 +13,7 @@ class GetNotesUseCase @Inject constructor(
     operator fun invoke(
         query: String = "",
         mood: Mood? = null,
-        offset: Int = 0
-    ): Flow<List<Note>> =
-        repository.getNotes(query, mood, offset)
+        tag: String? = null
+    ): Flow<PagingData<Note>> =
+        repository.getNotes(query, mood, tag)
 }
