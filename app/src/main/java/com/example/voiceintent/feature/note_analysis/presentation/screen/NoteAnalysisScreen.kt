@@ -32,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -59,7 +60,7 @@ fun NoteAnalysisScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(text = "Обработка заметки") },
+                title = { Text(text = stringResource(R.string.note_analysis_title)) },
                 navigationIcon = {
                     IconButton(
                         onClick = navigateBack,
@@ -67,7 +68,7 @@ fun NoteAnalysisScreen(
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад"
+                            contentDescription = stringResource(R.string.note_details_back)
                         )
                     }
                 }
@@ -121,7 +122,7 @@ private fun ProcessingState() {
     )
     Spacer(modifier = Modifier.height(24.dp))
     Text(
-        text = "Обрабатываю заметку...",
+        text = stringResource(R.string.note_analysis_processing),
         style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.onSurfaceVariant
     )
@@ -140,7 +141,7 @@ fun ErrorState(
         tint = MaterialTheme.colorScheme.error
     )
     Spacer(modifier = Modifier.height(16.dp))
-    Text(text = "Не удалось обработать заметку")
+    Text(text = stringResource(R.string.note_analysis_failed))
     Spacer(modifier = Modifier.height(8.dp))
     Text(
         text = message,
@@ -155,12 +156,12 @@ fun ErrorState(
         OutlinedButton(
             onClick = onNavigateBack
         ) {
-            Text("Отмена")
+            Text(stringResource(R.string.note_details_cancel))
         }
         Button(
             onClick = onRetry
         ) {
-            Text("Повторить")
+            Text(stringResource(R.string.note_analysis_retry))
         }
     }
 }

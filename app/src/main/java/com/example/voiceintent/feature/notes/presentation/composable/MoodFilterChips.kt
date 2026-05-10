@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.voiceintent.feature.notes.presentation.viewmodel.MoodFilter
 
@@ -19,7 +20,7 @@ fun MoodFilterChips(
             FilterChip(
                 selected = selectedFilter == filter,
                 onClick = { onFilterSelect(filter) },
-                label = { Text(text = filter.label) }
+                label = { Text(text = stringResource(filter.labelRes)) }
             )
         }
     }

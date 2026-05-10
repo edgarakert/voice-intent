@@ -32,9 +32,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.voiceintent.R
 import com.example.voiceintent.feature.record.domain.entity.AudioLanguage
 import com.example.voiceintent.feature.record.presentation.composable.AudioWaveform
 import com.example.voiceintent.feature.record.presentation.composable.RecordButton
@@ -56,15 +58,19 @@ fun RecordScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    val noMicPermissionText = stringResource(R.string.record_no_mic_permission)
+    val serviceUnavailableText = stringResource(R.string.record_service_unavailable)
+    val stopFailedText = stringResource(R.string.record_stop_failed)
+
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (!isGranted) {
-            viewModel.onRecordingError(message = "Нет доступа к микрофону")
+            viewModel.onRecordingError(message = noMicPermissionText)
             return@rememberLauncherForActivityResult
         }
         if (recordControl == null) {
-            viewModel.onRecordingError(message = "Сервис записи недоступен")
+            viewModel.onRecordingError(message = serviceUnavailableText)
             return@rememberLauncherForActivityResult
         }
 
@@ -107,7 +113,7 @@ fun RecordScreen(
                         if (state is RecordState.Recording) {
                             Spacer(modifier = Modifier.width(20.dp))
                         }
-                        Text(text = "Новая заметка")
+                        Text(text = stringResource(R.string.record_new_note))
                         if (state is RecordState.Recording) {
                             Spacer(modifier = Modifier.width(8.dp))
                             RecordIndicator()
@@ -118,7 +124,7 @@ fun RecordScreen(
                     IconButton(onClick = navigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад",
+                            contentDescription = stringResource(R.string.note_details_back),
                         )
                     }
                 },
@@ -164,7 +170,7 @@ fun RecordScreen(
                             if (record != null) {
                                 viewModel.onRecordingStopped(record = record)
                             } else {
-                                viewModel.onRecordingError(message = "Не удалось остановить запись")
+                                viewModel.onRecordingError(message = stopFailedText)
                             }
                         }
                     }
@@ -185,7 +191,7 @@ fun RecordScreen(
 @Composable
 private fun IdleState(onRecordButtonClick: () -> Unit) {
     Text(
-        text = "Нажми, чтобы начать запись",
+        text = stringResource(R.string.record_tap_to_start),
         style = MaterialTheme.typography.bodyLarge
     )
     Spacer(Modifier.height(24.dp))
@@ -212,7 +218,7 @@ private fun RecordingState(
 @Composable
 private fun StoppedState(durationSec: Long) {
     Text(
-        text = "Готово — $durationSec сек",
+        text = stringResource(R.string.record_done_seconds, durationSec),
         style = MaterialTheme.typography.bodyLarge
     )
 }
@@ -220,7 +226,7 @@ private fun StoppedState(durationSec: Long) {
 @Composable
 private fun ErrorState(message: String) {
     Text(
-        text = "Ошибка: $message",
+        text = stringResource(R.string.record_error, message),
         color = MaterialTheme.colorScheme.error,
         style = MaterialTheme.typography.bodyLarge
     )
