@@ -6,6 +6,7 @@
     <string name="notes_mood_neutral">😐 Нейтрально</string>
     <string name="notes_mood_negative">😔 Негатив</string>
     <!-- Notes screen -->
+    <string name="notes_cannot_load_notes">Не удалось получить заметки</string>
     <string name="notes_clear_filters">Сбросить фильтры</string>
     <string name="notes_clear">Очистить</string>
     <string name="notes_clear_tag">Снять тег</string>
@@ -14,8 +15,10 @@
     <string name="notes_not_found">Ничего не найдено</string>
     <string name="notes_notes">Заметки</string>
     <string name="notes_record_first_note">Запиши первую заметку</string>
+    <string name="notes_retry">Повторить</string>
     <string name="notes_search_by_text_or_tag">Поиск по тексту или тегам…</string>
     <string name="notes_tag">Тег:</string>
+    <string name="notes_try_or_later">Повори или попробуй позже</string>
     <string name="notes_try_to_change_query">Попробуй изменить запрос или фильтры</string>
     <!-- Note analysis screen -->
     <string name="note_analysis_title">Обработка заметки</string>

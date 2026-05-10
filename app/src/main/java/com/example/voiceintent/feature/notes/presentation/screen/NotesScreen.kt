@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
@@ -32,6 +31,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.example.voiceintent.R
 import com.example.voiceintent.feature.notes.presentation.composable.MoodFilterChips
 import com.example.voiceintent.feature.notes.presentation.composable.NoteCard
@@ -47,6 +49,7 @@ fun NotesScreen(
     viewModel: NotesViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val notes = viewModel.notesFlow.collectAsLazyPagingItems()
 
     Scaffold(
         floatingActionButton = {
@@ -88,7 +91,7 @@ fun NotesScreen(
             }
             Spacer(modifier = Modifier.height(8.dp))
             when {
-                state.isLoading -> {
+                notes.loadState.refresh is LoadState.Loading -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -97,7 +100,11 @@ fun NotesScreen(
                     }
                 }
 
-                state.filteredNotes.isEmpty() -> {
+                notes.loadState.refresh is LoadState.Error -> {
+                    Error(onRetryPressed = { notes.refresh() })
+                }
+
+                notes.itemCount == 0 -> {
                     EmptyNotesPlaceholder(
                         hasFilters = state.searchQuery.isNotBlank()
                                 || state.selectedMoodFilter != MoodFilter.ALL
@@ -112,14 +119,16 @@ fun NotesScreen(
                         contentPadding = PaddingValues(bottom = 16.dp)
                     ) {
                         items(
-                            items = state.filteredNotes,
-                            key = { it.id }
-                        ) { note ->
-                            NoteCard(
-                                note = note,
-                                onTagClick = viewModel::onTagFilterChanged,
-                                onClick = { onNoteClick(note.id) }
-                            )
+                            count = notes.itemCount,
+                            key = notes.itemKey { it.id }
+                        ) { index ->
+                            notes[index]?.let { note ->
+                                NoteCard(
+                                    note = note,
+                                    onTagClick = viewModel::onTagFilterChanged,
+                                    onClick = { onNoteClick(note.id) }
+                                )
+                            }
                         }
                     }
                 }
@@ -152,7 +161,35 @@ private fun ActiveTagFilter(tag: String, onClear: () -> Unit) {
 }
 
 @Composable
-fun EmptyNotesPlaceholder(hasFilters: Boolean, onClearFilters: () -> Unit) {
+private fun Error(
+    onRetryPressed: () -> Unit
+) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(verticalArrangement = Arrangement.Center) {
+            Text(
+                text = stringResource(R.string.notes_cannot_load_notes),
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text =
+                    stringResource(R.string.notes_try_or_later),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(Modifier.height(12.dp))
+            TextButton(onClick = onRetryPressed) {
+                Text(text = stringResource(R.string.notes_retry))
+            }
+        }
+    }
+}
+
+@Composable
+private fun EmptyNotesPlaceholder(hasFilters: Boolean, onClearFilters: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
