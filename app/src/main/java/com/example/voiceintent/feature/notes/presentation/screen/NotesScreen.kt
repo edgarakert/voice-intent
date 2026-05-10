@@ -100,6 +100,10 @@ fun NotesScreen(
                     }
                 }
 
+                notes.loadState.refresh is LoadState.Error -> {
+                    Error(onRetryPressed = { notes.refresh() })
+                }
+
                 notes.itemCount == 0 -> {
                     EmptyNotesPlaceholder(
                         hasFilters = state.searchQuery.isNotBlank()
@@ -157,7 +161,35 @@ private fun ActiveTagFilter(tag: String, onClear: () -> Unit) {
 }
 
 @Composable
-fun EmptyNotesPlaceholder(hasFilters: Boolean, onClearFilters: () -> Unit) {
+private fun Error(
+    onRetryPressed: () -> Unit
+) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(verticalArrangement = Arrangement.Center) {
+            Text(
+                text = stringResource(R.string.notes_cannot_load_notes),
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text =
+                    stringResource(R.string.notes_try_or_later),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(Modifier.height(12.dp))
+            TextButton(onClick = onRetryPressed) {
+                Text(text = stringResource(R.string.notes_retry))
+            }
+        }
+    }
+}
+
+@Composable
+private fun EmptyNotesPlaceholder(hasFilters: Boolean, onClearFilters: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
