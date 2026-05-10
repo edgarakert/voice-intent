@@ -6,6 +6,7 @@ import com.example.voiceintent.feature.record.domain.entity.AudioRecord
 import com.example.voiceintent.feature.record.domain.use_case.SaveAudioRecordUseCase
 import com.example.voiceintent.feature.record.presentation.service.RecordEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,8 +21,11 @@ class RecordViewModel @Inject constructor(
     private val _state = MutableStateFlow<RecordState>(RecordState.Idle)
     val state: StateFlow<RecordState> = _state.asStateFlow()
 
+    private var eventsJob: Job? = null
+
     fun onRecordEventsFlow(eventsFlow: Flow<RecordEvent>) {
-        viewModelScope.launch {
+        eventsJob?.cancel()
+        eventsJob = viewModelScope.launch {
             eventsFlow.collect { event ->
                 when (event) {
                     is RecordEvent.AmplitudeChanged -> {

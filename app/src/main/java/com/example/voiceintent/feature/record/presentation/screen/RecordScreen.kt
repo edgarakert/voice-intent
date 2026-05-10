@@ -63,8 +63,12 @@ fun RecordScreen(
             viewModel.onRecordingError(message = "Нет доступа к микрофону")
             return@rememberLauncherForActivityResult
         }
+        if (recordControl == null) {
+            viewModel.onRecordingError(message = "Сервис записи недоступен")
+            return@rememberLauncherForActivityResult
+        }
 
-        recordControl?.start(AudioLanguage.Auto)
+        recordControl.start(AudioLanguage.Auto)
         viewModel.onRecordingStarted()
     }
 

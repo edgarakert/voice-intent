@@ -39,7 +39,7 @@ class RecordService : Service() {
 
     private var language: AudioLanguage = AudioLanguage.Auto
 
-    private val _eventsFlow = MutableSharedFlow<RecordEvent>()
+    private val _eventsFlow = MutableSharedFlow<RecordEvent>(replay = 1)
     val eventsFlow: SharedFlow<RecordEvent> = _eventsFlow.asSharedFlow()
 
     override fun onBind(intent: Intent?): IBinder = binder
@@ -106,7 +106,8 @@ class RecordService : Service() {
 
         return AudioRecord(
             path = file.absolutePath,
-            durationMs = durationMs
+            durationMs = durationMs,
+            language = this.language
         )
     }
 
