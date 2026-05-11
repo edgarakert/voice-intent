@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -50,6 +51,9 @@ fun NotesScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val notes = viewModel.notesFlow.collectAsLazyPagingItems()
+
+    val isFirstLoad = notes.loadState.refresh is LoadState.Loading && notes.itemCount == 0
+    val isRefreshing = notes.loadState.refresh is LoadState.Loading && notes.itemCount > 0
 
     Scaffold(
         floatingActionButton = {
@@ -91,7 +95,7 @@ fun NotesScreen(
             }
             Spacer(modifier = Modifier.height(8.dp))
             when {
-                notes.loadState.refresh is LoadState.Loading -> {
+                isFirstLoad -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -114,20 +118,27 @@ fun NotesScreen(
                 }
 
                 else -> {
-                    LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(10.dp),
-                        contentPadding = PaddingValues(bottom = 16.dp)
+                    PullToRefreshBox(
+                        isRefreshing = isRefreshing,
+                        onRefresh = { notes.refresh() },
+                        modifier = Modifier.fillMaxSize()
                     ) {
-                        items(
-                            count = notes.itemCount,
-                            key = notes.itemKey { it.id }
-                        ) { index ->
-                            notes[index]?.let { note ->
-                                NoteCard(
-                                    note = note,
-                                    onTagClick = viewModel::onTagFilterChanged,
-                                    onClick = { onNoteClick(note.id) }
-                                )
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.spacedBy(10.dp),
+                            contentPadding = PaddingValues(bottom = 16.dp)
+                        ) {
+                            items(
+                                count = notes.itemCount,
+                                key = notes.itemKey { it.id }
+                            ) { index ->
+                                notes[index]?.let { note ->
+                                    NoteCard(
+                                        note = note,
+                                        onTagClick = viewModel::onTagFilterChanged,
+                                        onClick = { onNoteClick(note.id) }
+                                    )
+                                }
                             }
                         }
                     }
