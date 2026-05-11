@@ -13,8 +13,6 @@
 
 VoiceIntent is a personal voice notes where AI does the heavy lifting. After recording, Groq's Whisper transcribes your speech and Llama 3.3 extracts structured metadata — tags, tasks, mood, and a summary. Everything is stored locally in a Room database.
 
-**Supported languages:** Russian · English · Armenian · Auto-detect
-
 ---
 
 ## Features
