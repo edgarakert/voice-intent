@@ -22,7 +22,7 @@ VoiceIntent is a personal voice diary where AI does the heavy lifting. After rec
 ### 🎙️ Voice Recording & AI Analysis
 
 <p align="center">
-  <img src="docs/gifs/recording.gif" width="270" alt="Voice Recording and AI Analysis">
+  <img src="docs/gifs/recording.gif" height="560" width="300" alt="Voice Recording and AI Analysis">
 </p>
 
 Record your thoughts hands-free. The app runs a foreground service so recording continues even if you switch apps. A live waveform visualizes your voice in real time.
@@ -38,7 +38,7 @@ Once you stop, Groq Whisper transcribes your audio and Llama 3.3 instantly extra
 ### 📋 Notes List
 
 <p align="center">
-  <img src="docs/gifs/notes_list.gif" width="270" alt="Notes List">
+  <img src="docs/gifs/notes_list.gif" height="553" width="270" alt="Notes List">
 </p>
 
 All notes in one place. Search by transcript text, filter by mood or tag, pull to refresh.
@@ -48,7 +48,7 @@ All notes in one place. Search by transcript text, filter by mood or tag, pull t
 ### 📖 Note Details & Playback
 
 <p align="center">
-  <img src="docs/gifs/note_details.gif" width="270" alt="Note Details">
+  <img src="docs/gifs/note_details.gif" height="557" width="270" alt="Note Details">
 </p>
 
 Open any note to read the full transcript, see extracted metadata, and replay the original audio with seek controls.
