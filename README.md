@@ -1,6 +1,6 @@
 # VoiceIntent 🎙️
 
-> AI-powered voice diary for Android. Record your thoughts by voice — the app transcribes, analyzes, and organizes them automatically.
+> AI-powered voice notes for Android. Record your thoughts by voice — the app transcribes, analyzes, and organizes them automatically.
 
 ![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.3-blue.svg)
